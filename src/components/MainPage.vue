@@ -94,9 +94,18 @@
         <!-- 规则预览 -->
         <el-card>
           <template #header>
+            <div class="flex justify-between items-center">
             <div class="flex items-center">
               <el-icon class="mr-2"><View /></el-icon>
               <span class="text-lg font-bold">当前规则</span>
+            </div>
+            <el-button
+            type = "primary"
+            class="rounded-full"
+            @click="checkRule"
+            >
+            检验规则
+          </el-button>
             </div>
           </template>
           <el-input
@@ -175,6 +184,7 @@ import draggable from 'vuedraggable'
 import suricataKeywords from '../data/SuricataKeyWords'
 import KeywordForm from './KeywordForm.vue'
 import { Document, Setting, View, Edit, Delete, ArrowDown, ArrowUp } from '@element-plus/icons-vue'
+import axios from 'axios'
 
 // 规则数据模型
 const rule = ref({
@@ -502,6 +512,19 @@ const defaultProps = {
 const handleNodeClick = (data) => {
   if (data.type === 'keyword' && !isKeywordSelected(data.id)) {
     addKeyword(data.data)
+  }
+}
+
+// 发送POST请求检查规则
+const checkRule = async () => {
+  try {
+    const response = await axios.post('/rule/check', {
+      rule: formattedRule.value
+    });
+    // 处理接收到的数据，目前先空置
+    console.log(response.data);
+  } catch (error) {
+    console.error('请求出错:', error);
   }
 }
 </script>

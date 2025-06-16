@@ -9,7 +9,7 @@ const suricataKeywords = {
                 {
                     id: "msg",
                     name: "消息",
-                    syntax: "msg:\"{{msg}}\";",
+                    syntax: "msg:{{msg}};",
                     params: [
                         {
                             name: "msg",
@@ -2082,7 +2082,7 @@ const suricataKeywords = {
 
     // 辅助函数：渲染整个规则
     renderFullRule: function (rule) {
-        let ruleString = `${rule.action} ${rule.protocol} ${rule.source.address} ${rule.source.port} ${rule.direction} ${rule.destination.address} ${rule.destination.port} (`;
+        let ruleString = `${rule.action} ${rule.protocol} ${rule.source.address} ${rule.source.port} -> ${rule.destination.address} ${rule.destination.port} (`;
 
         // 添加规则选项
         if (rule.options && rule.options.length > 0) {
