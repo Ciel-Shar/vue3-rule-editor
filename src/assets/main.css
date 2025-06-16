@@ -1,8 +1,86 @@
+/* src/assets/main.css */
 @import './base.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --el-color-primary: #10B981;
+  --el-color-primary-light-3: #34D399;
+  --el-color-primary-light-5: #6EE7B7;
+  --el-color-primary-light-7: #A7F3D0;
+  --el-color-primary-light-8: #D1FAE5;
+  --el-color-primary-light-9: #ECFDF5;
+  --el-color-primary-dark-2: #059669;
+}
+
+/* Global styles */
+html, body {
+  @apply h-full m-0 p-0;
+}
+
+#app {
+  @apply h-full;
+}
+
+/* Element Plus theme customization */
+.el-button--primary {
+  --el-button-bg-color: var(--el-color-primary);
+  --el-button-border-color: var(--el-color-primary);
+  --el-button-hover-bg-color: var(--el-color-primary-light-3);
+  --el-button-hover-border-color: var(--el-color-primary-light-3);
+  --el-button-active-bg-color: var(--el-color-primary-dark-2);
+  --el-button-active-border-color: var(--el-color-primary-dark-2);
+}
+
+.el-button--primary.is-plain {
+  --el-button-bg-color: var(--el-color-primary-light-9);
+  --el-button-border-color: var(--el-color-primary-light-5);
+  --el-button-hover-bg-color: var(--el-color-primary);
+  --el-button-hover-border-color: var(--el-color-primary);
+  --el-button-active-bg-color: var(--el-color-primary-dark-2);
+  --el-button-active-border-color: var(--el-color-primary-dark-2);
+}
+
+.el-input__wrapper,
+.el-textarea__wrapper {
+  @apply shadow-none;
+}
+
+.el-card {
+  @apply border border-gray-200;
+}
+
+.el-card__header {
+  @apply bg-gray-50 border-b border-gray-200;
+}
+
+/* Loading animation */
+.el-loading-spinner {
+  @apply flex items-center justify-center;
+}
+
+.el-loading-spinner .circular {
+  @apply w-8 h-8;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  @apply w-2;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400;
+}
 
 /* 自定义样式 */
 .font-mono {
@@ -42,10 +120,13 @@
 }
 
 #app {
-  max-width: 1280px;
+  max-width: 1600px; /* 增大最大宽度 */
   margin: 0 auto;
   padding: 2rem;
   font-weight: normal;
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
 }
 
 a,
@@ -70,7 +151,7 @@ a,
 
   #app {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr; /* 调整为单栏布局 */
     padding: 0 2rem;
   }
 }
