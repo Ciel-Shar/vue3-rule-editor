@@ -263,29 +263,4 @@ watch(() => props.ruleOptions, (newOptions) => {
   white-space: nowrap;
 }
 
-.form-item-hint {
-  @apply absolute right-0 top-0;
-}
-
-:deep(.el-form-item__label) {
-  @apply text-sm font-medium text-gray-700;
-}
-
-:deep(.el-input__inner),
-:deep(.el-input-number__wrapper),
-:deep(.el-select__wrapper) {
-  @apply bg-white border-gray-300;
-}
-
-:deep(.el-checkbox__label) {
-  @apply text-sm text-gray-600;
-}
-
-:deep(.el-checkbox-group) {
-  @apply flex flex-col;
-}
-
-:deep(.el-form-item.is-required .el-form-item__label::before) {
-  @apply text-red-500;
-}
 </style>
