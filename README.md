@@ -1,4 +1,4 @@
-# Suricata 规则可视化编辑器
+# Suricata 规则可视化编辑器(已废弃)
 
 一个基于 Vue3 和 DaisyUI 的 Suricata 规则可视化编辑器，支持通过图形界面创建和编辑 Suricata 规则。
 

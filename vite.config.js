@@ -18,7 +18,12 @@ export default defineConfig({
         changeOrigin: true, // 允许跨域
         rewrite: (path) => path.replace(/^\/rule\/check/, '/rule/check') // 路径重写
       }
-    }
+    },
+    allowedHosts: [
+      'endorphin.w1.luyouxia.net', // 添加上你的内网穿透域名
+      'localhost', // 保留localhost，确保本地开发不受影响
+      '.luyouxia.net' // 也可以使用通配符，允许所有luyouxia.net的子域名
+    ]
   },
   resolve: {
     alias: {

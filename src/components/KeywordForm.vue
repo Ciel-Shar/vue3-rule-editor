@@ -29,18 +29,18 @@
       <!-- Boolean checkbox -->
       <el-checkbox
         v-if="param.type === 'boolean'"
-        :model-value="true"
+        v-model="params[param.name]"
         class="w-full"
-        disabled
       >
       </el-checkbox>
 
       <!-- Single select -->
       <el-select
-        v-if="param.type === 'enum' && !param.multi"
+        v-if="param.type === 'enum' && !param.multiple"
         v-model="params[param.name]"
         :required="param.required"
         class="w-full"
+        clearable
       >
         <el-option
           v-for="option in param.options"
@@ -52,7 +52,7 @@
 
       <!-- Multi select -->
       <el-checkbox-group
-        v-if="param.type === 'enum' && param.multi"
+        v-if="param.type === 'enum' && param.multiple"
         v-model="params[param.name]"
         class="w-full"
       >
@@ -118,18 +118,6 @@ const isContentModifier = computed(() => {
 // 监听params变化，自动更新
 watch(() => props.params, (newParams) => {
   emit('update', newParams)
-}, { deep: true })
-
-// 实现content和pcre互斥
-watch(() => props.ruleOptions, (newOptions) => {
-  const hasContent = newOptions.some(option => option.id === 'content')
-  const hasPcre = newOptions.some(option => option.id === 'pcre')
-
-  if (hasContent && hasPcre) {
-    // 移除pcre
-    const newRuleOptions = newOptions.filter(option => option.id !== 'pcre')
-    emit('updateRuleOptions', newRuleOptions)
-  }
 }, { deep: true })
 </script>
 

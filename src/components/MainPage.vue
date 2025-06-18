@@ -15,7 +15,7 @@
               :data="treeData"
               :props="defaultProps"
               node-key="id"
-              :expand-on-click-node="false"
+              :expand-on-click-node="true"
               @node-click="handleNodeClick"
             >
               <template #default="{ node, data }">
@@ -113,6 +113,7 @@
             type="textarea"
             :rows="10"
             class="rule-preview"
+            :style="{ 'font-size': '16px', 'font-weight': '600' }"
           ></el-input>
         </el-card>
       </div>
@@ -429,6 +430,10 @@ const isSubCategoryOpen = (categoryId) => {
 
 // 检查关键字是否已被选择
 const isKeywordSelected = (keywordId) => {
+  // 如果关键字ID是content，则直接返回false，不进行重复检查
+  if (keywordId === 'content') {
+    return false;
+  }
   return rule.value.options.some(option => option.id === keywordId)
 }
 

@@ -220,6 +220,7 @@ const suricataKeywords = {
                             name: "content",
                             type: "string",
                             required: true,
+                            quote: true,
                             description: "要匹配的内容。可以使用十六进制表示法（如|00|）来表示不可打印字符。特殊字符如\"、;、:、|需要使用十六进制表示法。"
                         }
                     ],
@@ -233,11 +234,11 @@ const suricataKeywords = {
                     syntax: "nocase;",
                     params: [
                         {
-                            name: "enabled",
-                            type: "boolean",
+                            name: "nocase",
+                            type: "",
                             required: true,
                             default: true,
-                            description: "启用不区分大小写匹配。此关键字不需要额外配置，只需启用即可。",
+                            description: "启用不区分大小写匹配。此关键字不需要额外配置，只需选用即可。",
                             static: true
                         }
                     ],
@@ -251,11 +252,11 @@ const suricataKeywords = {
                     syntax: "rawbytes;",
                     params: [
                         {
-                            name: "enabled",
-                            type: "boolean",
+                            name: "rawbytes",
+                            type: "",
                             required: true,
                             default: true,
-                            description: "启用原始字节匹配。此关键字不需要额外配置，只需启用即可。",
+                            description: "启用原始字节匹配。此关键字不需要额外配置，只需选用即可。",
                             static: true
                         }
                     ],
@@ -330,7 +331,7 @@ const suricataKeywords = {
                 {
                     id: "isdataat",
                     name: "数据位置",
-                    syntax: "isdataat:<number>[,relative];",
+                    syntax: "isdataat:{{position}}{{#relative}},relative{{/relative}};",
                     params: [
                         {
                             name: "position",
@@ -352,7 +353,7 @@ const suricataKeywords = {
                 {
                     id: "absent",
                     name: "不存在",
-                    syntax: "absent[:or_else];",
+                    syntax: "absent{{#or_else}}: or_else{{/or_else}};",
                     params: [
                         {
                             name: "or_else",
@@ -368,31 +369,31 @@ const suricataKeywords = {
                 {
                     id: "bsize",
                     name: "缓冲区大小",
-                    syntax: "bsize:<expr>;",
+                    syntax: "bsize:{{bsize}};",
                     params: [
                         {
-                            name: "expr",
+                            name: "bsize",
                             type: "string",
                             required: true,
-                            placeholder: "如: 100, 0x64, !0x14, >21, >=21, <22, <=22, 19-22, !19-22, &0xc0=0x80, &0xc0!=0",
-                            description: "整数比较表达式，支持=, !=, >, >=, <, <=, 范围, 取反范围, 位掩码等。"
+                            placeholder: "如: 100, 0x64, >21, >=21, <22, <=22, 19<>22",
+                            description: "整数比较表达式，支持=, >, >=, <, <=, 范围<>。"
                         }
                     ],
-                    description: "匹配缓冲区的长度。支持多种整数比较模式，包括等于、不等于、大于、小于、范围、位掩码等。整数可用十进制或十六进制。范围为排他。",
+                    description: "匹配缓冲区的长度。支持多种整数比较模式，包括等于、大于、小于、范围、位掩码等。整数可用十进制或十六进制。范围为排他。",
                     exclusiveWith: [],
                     requires: []
                 },
                 {
                     id: "dsize",
                     name: "数据大小",
-                    syntax: "dsize:<expr>;",
+                    syntax: "dsize:{{dsize}};",
                     params: [
                         {
-                            name: "expr",
+                            name: "dsize",
                             type: "string",
                             required: true,
-                            placeholder: "如: 100, 0x64, !0x14, >21, >=21, <22, <=22, 19-22, !19-22, &0xc0=0x80, &0xc0!=0",
-                            description: "整数比较表达式，支持=, !=, >, >=, <, <=, 范围, 取反范围, 位掩码等。"
+                            placeholder: "如: 100, 0x64, >21, >=21, <22, <=22, 19<>22",
+                            description: "整数比较表达式，支持=, >, >=, <, <=, 范围<>。"
                         }
                     ],
                     description: "匹配数据包payload的大小。支持多种整数比较模式，包括等于、不等于、大于、小于、范围、位掩码等。整数可用十进制或十六进制。范围为排他。",
@@ -402,7 +403,7 @@ const suricataKeywords = {
                 {
                     id: "byte_test",
                     name: "字节测试",
-                    syntax: "byte_test:<num of bytes>,<operator>,<test value>,<offset>[,relative][,<endian>][,string,<num type>][,dce][,bitmask <bitmask value>];",
+                    syntax: "byte_test:{{num_of_bytes}},{{operator}},{{test_value}},{{offset}}{{#relative}},relative{{/relative}}{{#endian}},{{endian}}{{/endian}}{{#string}},string,{{string}}{{/string}}{{#dce}},dce{{/dce}}{{#bitmask}},bitmask {{bitmask}}{{/bitmask}};",
                     params: [
                         {
                             name: "num_of_bytes",
@@ -419,9 +420,9 @@ const suricataKeywords = {
                         },
                         {
                             name: "test_value",
-                            type: "number",
+                            type: "string",
                             required: true,
-                            description: "要比较的值。"
+                            description: "目标值，十六进制或十进制。"
                         },
                         {
                             name: "offset",
@@ -457,9 +458,9 @@ const suricataKeywords = {
                         },
                         {
                             name: "bitmask",
-                            type: "number",
+                            type: "string",
                             required: false,
-                            description: "应用于转换字节的位掩码值。"
+                            description: "应用于转换字节的位掩码值,格式为十六进制。"
                         }
                     ],
                     description: "从指定位置提取指定数量的字节，并与测试值进行比较。",
@@ -468,8 +469,8 @@ const suricataKeywords = {
                 },
                 {
                     id: "byte_math",
-                    name: "字节数学",
-                    syntax: "byte_math:bytes <num of bytes>,offset <offset>,oper <operator>,rvalue <rvalue>,result <result_var>[,relative][,endian <endian>][,string <number-type>][,dce][,bitmask <value>];",
+                    name: "字节运算",
+                    syntax: "byte_math:bytes {{num_of_bytes}},offset {{offset}},oper {{operator}},rvalue {{test_value}},result {{result_var}}{{#relative}},relative {{/relative}}{{#endian}},{{endian}}{{/endian}}{{#string}},string,{{string}}{{/string}}{{#dce}},dce {{/dce}}{{#bitmask}},bitmask {{bitmask}}{{/bitmask}};",
                     params: [
                         {
                             name: "num_of_bytes",
@@ -542,7 +543,7 @@ const suricataKeywords = {
                 {
                     id: "byte_jump",
                     name: "字节跳转",
-                    syntax: "byte_jump:<num of bytes>,<offset>[,relative][,multiplier <mult_value>][,<endian>][,string,<num_type>][,align][,from_beginning][,from_end][,post_offset <value>][,dce][,bitmask <value>];",
+                    syntax: "byte_jump:{{num_of_bytes}},{{offset}}{{#relative}},relative {{/relative}}{{#multiplier}},multiplier {{multiplier}}{{/multiplier}}{{#endian}},{{endian}}{{/endian}}{{#string}},string,{{string}}{{/string}}{{#align}},align {{/align}}{{#from_beginning}},from_beginning {{/from_beginning}}{{#from_end}},from_end {{/from_end}}{{#post_offset}},post_offset {{post_offset}}{{/post_offset}}{{#dce}},dce {{/dce}}{{#bitmask}},bitmask {{bitmask}}{{/bitmask}};",
                     params: [
                         {
                             name: "num_of_bytes",
@@ -626,7 +627,7 @@ const suricataKeywords = {
                 {
                     id: "byte_extract",
                     name: "字节提取",
-                    syntax: "byte_extract:<num of bytes>,<offset>,<var_name>[,relative][,multiplier <mult-value>][,<endian>][,dce][,string[,<num_type>][,align <align-value>];",
+                    syntax: "byte_extract:{{num_of_bytes}},{{offset}},{{var_name}}{{#relative}},relative {{/relative}}{{#multiplier}},multiplier {{multiplier}}{{/multiplier}}{{#endian}},{{endian}}{{/endian}}{{#dce}},dce {{/dce}}{{#string}},string,{{string}}{{/string}}{{#align}},align {{align}}{{/align}};",
                     params: [
                         {
                             name: "num_of_bytes",
@@ -692,7 +693,7 @@ const suricataKeywords = {
                 {
                     id: "entropy",
                     name: "熵值",
-                    syntax: "entropy:[bytes <byteval>][offset <offsetval>]value <operator><entropy-value>;",
+                    syntax: "entropy:{{#bytes}}bytes {{bytes}}{{/bytes}}, {{#offset}}offset {{offset}}, {{/offset}}value {{operator}}{{entropy_value}};",
                     params: [
                         {
                             name: "bytes",
@@ -711,7 +712,7 @@ const suricataKeywords = {
                             type: "enum",
                             options: ["=", "<", "<=", ">", ">=", "!=", "x-y", "!x-y"],
                             required: false,
-                            description: "比较运算符。默认为=。"
+                            description: "比较运算符。不添加的情况下默认为=。"
                         },
                         {
                             name: "entropy_value",
@@ -729,7 +730,7 @@ const suricataKeywords = {
                 {
                     id: "rpc",
                     name: "RPC",
-                    syntax: "rpc:<application number>,[<version number>|*],[<procedure number>|*];",
+                    syntax: "rpc:{{application_number}},{{version_number}},{{procedure_number}};",
                     params: [
                         {
                             name: "application_number",
@@ -760,8 +761,8 @@ const suricataKeywords = {
                     syntax: "replace;",
                     params: [
                         {
-                            name: "enabled",
-                            type: "boolean",
+                            name: "replace",
+                            type: "",
                             required: true,
                             default: true,
                             description: "启用内容替换。此关键字不需要额外配置，只需启用即可。",
@@ -775,7 +776,7 @@ const suricataKeywords = {
                 {
                     id: "pcre",
                     name: "PCRE",
-                    syntax: "pcre:\"/<regex>/opts\";",
+                    syntax: "pcre:\"/{{regex}}/{{opts}}\";",
                     params: [
                         {
                             name: "regex",
@@ -952,7 +953,7 @@ const suricataKeywords = {
                 {
                     id: "from_base64",
                     name: "Base64解码",
-                    syntax: "from_base64: [[bytes <value>] [, offset <offset_value> [, mode: strict|rfc4648|rfc2045]]];",
+                    syntax: "from_base64:{{#bytes}} bytes {{bytes}},{{/bytes}}{{#offset}} offset {{offset}},{{/offset}}{{#mode}} mode {{mode}}{{/mode}};",
                     params: [
                         {
                             name: "bytes",
@@ -982,7 +983,7 @@ const suricataKeywords = {
                 {
                     id: "luaxform",
                     name: "Lua转换",
-                    syntax: "luaxform:{{script}}[, {{args}}];",
+                    syntax: "luaxform:{{script}}{{#args}}, {{args}}{{/args}};",
                     params: [
                         {
                             name: "script",
@@ -1680,7 +1681,7 @@ const suricataKeywords = {
                 {
                     id: "itype",
                     name: "ICMP类型",
-                    syntax: "itype:[<|>]<number>;",
+                    syntax: "itype:{{modifier}}{{value}};",
                     params: [
                         {
                             name: "modifier",
@@ -1973,7 +1974,7 @@ const suricataKeywords = {
         exampleRule.options.push({ id: "msg", params: { msg: "Example Rule" } });
         exampleRule.options.push({ id: "sid", params: { sid: 1000001 } });
         exampleRule.options.push({ id: "rev", params: { rev: 1 } });
-        
+
         // 根据协议添加特定的选项
         if (exampleRule.protocol === "tcp") {
             exampleRule.options.push({ id: "tcp.flags", params: { flags: "S" } });
@@ -2006,79 +2007,78 @@ const suricataKeywords = {
 
     // 辅助函数：渲染关键字为Suricata规则字符串
     renderKeywordToRule: function (keywordId, params) {
-    const keyword = this.getKeywordById(keywordId);
-    if (!keyword) return '';
+        const keyword = this.getKeywordById(keywordId);
+        if (!keyword) return '';
 
-    // 使用简单的模板引擎替换语法中的变量
-    let ruleSyntax = keyword.syntax;
-
-        // 特殊处理flow关键字
-        if (keywordId === 'flow') {
-            const direction = params.direction || '';
-            const state = params.state || [];
-            
-            if (!direction) return '';
-            
-            let flowValue = direction;
-            if (state && state.length > 0) {
-                flowValue += ', ' + state.join(', ');
-            }
-            
-            return `flow:${flowValue};`;
-        }
+        // 使用简单的模板引擎替换语法中的变量
+        let ruleSyntax = keyword.syntax;
 
         // 处理布尔类型的关键字（无参数的关键字）
         if (keyword.params.length === 1 && keyword.params[0].type === 'boolean' && keyword.params[0].static) {
             return keyword.syntax;
-    }
+        }
 
-    // 替换普通变量
-    for (const paramName in params) {
-        if (params.hasOwnProperty(paramName)) {
-            const paramValue = params[paramName];
+        // 替换普通变量
+        for (const paramName in params) {
+            if (params.hasOwnProperty(paramName)) {
+                const paramValue = params[paramName];
                 const paramDef = keyword.params.find(p => p.name === paramName);
+                console.log("paramValue:",paramValue);
+                // 处理非布尔类型、非必须参数存在值的情况
+                if (paramDef && paramDef.type !== "boolean" && !paramDef.required && paramValue) {
+                    // 移除条件标签，但保留内部内容
+                    ruleSyntax = ruleSyntax.replace(
+                        new RegExp(`{{#${paramName}}}(.*?){{/${paramName}}}`, 'gs'),
+                        '$1' // 保留匹配到的中间内容
+                    );
+                }
 
                 // 处理枚举类型的多选值
                 if (paramDef && paramDef.type === 'enum' && paramDef.multi && Array.isArray(paramValue)) {
                     if (paramValue.length > 0) {
                         // 对于多选值，用逗号连接所有选中的值
-                ruleSyntax = ruleSyntax.replace(`{{${paramName}}}`, paramValue.join(','));
+                        ruleSyntax = ruleSyntax.replace(`{{${paramName}}}`, paramValue.join(','));
                     } else {
                         // 如果多选值为空，保留其他参数的值
                         ruleSyntax = ruleSyntax.replace(`,{{${paramName}}}`, '');
                         ruleSyntax = ruleSyntax.replace(`{{${paramName}}}`, '');
                     }
-            }
-            // 处理布尔值条件渲染
-                else if (paramDef && paramDef.type === 'boolean') {
-                // 布尔值的条件渲染使用Mustache风格的语法
-                ruleSyntax = ruleSyntax.replace(`{{#${paramName}}}`, paramValue ? '' : '').replace(`{{/${paramName}}}`, paramValue ? '' : '');
-
-                // 如果是true，还需要替换变量本身
-                if (paramValue) {
-                    ruleSyntax = ruleSyntax.replace(`{{${paramName}}}`, paramValue);
                 }
-            }
+                // 处理布尔值条件渲染
+                else if (paramDef && paramDef.type === 'boolean') {
+                    // 布尔值的条件渲染使用Mustache风格的语法
+                    ruleSyntax = ruleSyntax.replace(
+                        new RegExp(`{{#${paramName}}}(.*?){{/${paramName}}}`, 'gs'),
+                        paramValue ? '$1' : ''
+                    );
+                    // 如果是true，还需要替换变量本身
+                    if (paramValue) {
+                        ruleSyntax = ruleSyntax.replace(`{{${paramName}}}`, paramValue);
+                    }
+                }
                 // 处理字符串和数字类型
                 else if (paramValue !== null && paramValue !== undefined && paramValue !== '') {
                     // 如果是字符串类型且需要引号，添加引号
-                    if (paramDef && paramDef.type === 'string' && paramDef.quote !== false) {
+                    if (paramDef && paramDef.type === 'string' && paramDef.quote) {
                         ruleSyntax = ruleSyntax.replace(`{{${paramName}}}`, `"${paramValue}"`);
                     } else {
-                ruleSyntax = ruleSyntax.replace(`{{${paramName}}}`, paramValue);
+                        ruleSyntax = ruleSyntax.replace(`{{${paramName}}}`, paramValue);
                     }
+                }
             }
         }
-    }
 
-    // 移除未填充的条件部分
-    ruleSyntax = ruleSyntax.replace(/\{\{#[a-zA-Z0-9_]+\}\}.*?\{\{\/[a-zA-Z0-9_]+\}\}/gs, '');
+        // 移除未填充的条件部分
+        ruleSyntax = ruleSyntax.replace(/\{\{#[a-zA-Z0-9_]+\}\}.*?\{\{\/[a-zA-Z0-9_]+\}\}/gs, '');
 
-    // 移除未替换的变量
-    ruleSyntax = ruleSyntax.replace(/\{\{[a-zA-Z0-9_]+\}\}/g, '');
+        // 移除未替换的变量
+        ruleSyntax = ruleSyntax.replace(/\{\{[a-zA-Z0-9_]+\}\}/g, '');
 
-    return ruleSyntax;
-},
+        // 移除不合规的符号使用
+        ruleSyntax = ruleSyntax.replace(/[^"\w\s;'](;)/g, '$1');
+
+        return ruleSyntax;
+    },
 
     // 辅助函数：渲染整个规则
     renderFullRule: function (rule) {
